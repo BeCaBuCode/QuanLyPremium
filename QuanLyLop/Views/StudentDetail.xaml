@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QuanLyLop.Views.StudentDetail">
+    <ContentPage.Content>
+        <VerticalStackLayout Spacing="10" Margin="5">
+            <Editor 
+                    Text="{Binding FullName}"
+                    Placeholder="Enter your name"
+                    HeightRequest="100" />
+            <Editor
+                    Text="{Binding BirthDate,StringFormat='{0:dd/MM/yyyy}'}"
+                    HeightRequest="100" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                <Button Text="Save"
+                        Command="{Binding SaveCommand}" WidthRequest ="100" />
+
+                <Button Grid.Column="1"
+                        Text="Delete"
+                        Command="{Binding DeleteCommand}" WidthRequest ="100"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ContentPage.Content>
+</ContentPage>

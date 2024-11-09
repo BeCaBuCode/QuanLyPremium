@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QuanLyLop.Views.StudentPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding NewCommand}" IconImageSource="{FontImage Glyph='+', Color=MediumPurple, Size=22}" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="50,.80*,0.2*"
+          ColumnDefinitions="*,*">
+        <Label Text="Student List" Grid.Row="0" Grid.Column="0" FontSize="30" FontAttributes="Bold"/>
+        <CollectionView Grid.Row="1" Grid.ColumnSpan="2"
+                        ItemsSource = "{Binding Students}"
+                        Margin="20"
+                        SelectionMode="Single"
+                        SelectionChangedCommand="{Binding SelectedCommand}"
+                        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding StudentId}" FontSize="22" Padding="0,0,10,0"/>
+                        <Label Text="{Binding FullName}" FontSize="14" TextColor="Silver" Padding="0,0,10,0"/>
+                        <Label Text="{Binding BirthDate, StringFormat='{0:dd/MM/yyyy}'}"></Label>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Grid.ColumnSpan="2" Grid.Row="2" Command="{Binding EditCommand}" Text="Edit Student" WidthRequest="150" HeightRequest="50"/>
+    </Grid>
+</ContentPage>

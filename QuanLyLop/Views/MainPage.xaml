@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="QuanLyLop.Views.MainPage">
+    <VerticalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Label Text="Nhập đường dẫn file .db" FontSize="Medium" />
+        <Entry Placeholder="Đường dẫn file .db" Text="{Binding Link}" />
+        <Button Text="Xác nhận" Command="{Binding NavigateCommandCommand}" />
+    </VerticalStackLayout>
+</ContentPage>
