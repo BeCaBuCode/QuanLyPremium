@@ -21,7 +21,7 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
     }
 
     [RelayCommand]
-    private async void New()
+    private async Task New()
     {
         await Shell.Current.GoToAsync(nameof(Views.ClassDetail));
     }
@@ -39,13 +39,13 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
         SelectedClass = selected;
     }
     [RelayCommand]
-    private async void Edit()
+    private async Task Edit()
     {
         await Shell.Current.GoToAsync($"{nameof(Views.ClassDetail)}?load={SelectedClass.ClassName}&id={SelectedClass.ClassId}");
     }
 
     [RelayCommand]
-    private async void GoToClass()
+    private async Task GoToClass()
     {
         await Shell.Current.GoToAsync($"{nameof(Views.StudentPage)}?student={SelectedClass.ClassId}");
     }
@@ -54,9 +54,9 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
         if (query.ContainsKey("save"))
         {
             var classReceiveEncoded = query["save"].ToString();
-            string classReceive = Uri.UnescapeDataString(classReceiveEncoded);
+            string classReceive = Uri.UnescapeDataString(classReceiveEncoded??"");
             var classId = Convert.ToInt32(query["id"]);
-            Class find = Classes.FirstOrDefault(x => x.ClassId == classId);
+            Class? find = Classes.FirstOrDefault(x => x.ClassId == classId);
             if ( find!= null)
             {
                 find.ClassName = classReceive;
@@ -65,14 +65,15 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
             else
             {
                 _classRepository.AddClassAsync(new Class {ClassName = classReceive});
-                Classes.Insert(Classes.Count(), new Class {ClassId=Classes.Count()+1,ClassName = classReceive});
+                Classes.Clear();
+                LoadClassesAsync();
             }
         }
         else if (query.ContainsKey("delete"))
         {
             var classReceive = query["delete"].ToString();
             var classId = Convert.ToInt32(query["id"]);
-            Class find = Classes.FirstOrDefault(Class => Class.ClassId == classId);
+            Class? find = Classes.FirstOrDefault(Class => Class.ClassId == classId);
             if (find != null)
             {
                 _classRepository.DeleteClassAsync(find);

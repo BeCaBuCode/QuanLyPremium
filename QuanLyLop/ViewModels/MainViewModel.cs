@@ -16,11 +16,14 @@ public partial class MainViewModel:ObservableObject
         _databaseService = databaseService;
     }
     [RelayCommand]
-    private async void NavigateCommand()
+    private async Task NavigateCommand()
     {
         if (string.IsNullOrEmpty(Link))
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "Please enter a link", "OK");
+            if (Application.Current?.MainPage!=null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please enter a link", "OK");
+            }
             return;
         }
 
@@ -28,8 +31,9 @@ public partial class MainViewModel:ObservableObject
         {
             _databaseService.Initialize(Link);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
            _databaseService.Initialize(Path.Combine(FileSystem.AppDataDirectory, "mydb.db"));
         }
         await Shell.Current.GoToAsync(nameof(Views.ClassPage));

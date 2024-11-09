@@ -47,11 +47,11 @@ public partial class StudentViewModel : ObservableObject, IQueryAttributable
         }
         else if (query.ContainsKey("fullName"))
         {
-            string fullName = Uri.UnescapeDataString(query["fullName"].ToString());
-            string trytoConvert=Uri.UnescapeDataString(query["birthDate"].ToString());
+            string fullName = Uri.UnescapeDataString(query["fullName"].ToString()??"");
+            string trytoConvert=Uri.UnescapeDataString(query["birthDate"].ToString()??"01/01/0001");
             DateTime birthDate = Convert.ToDateTime(trytoConvert);
             int id = Convert.ToInt32(query["id"]);
-            Student find = Students.FirstOrDefault(x => x.StudentId == id);
+            Student? find = Students.FirstOrDefault(x => x.StudentId == id);
             if (find != null)
             {
                 find.FullName = fullName;
@@ -62,13 +62,14 @@ public partial class StudentViewModel : ObservableObject, IQueryAttributable
             {
                 _studentRepo.AddStudentAsync(new Student
                     { FullName = fullName, BirthDate = birthDate, ClassId = classId });
-                Students.Insert(Students.Count,new Student {FullName = fullName, BirthDate = birthDate, ClassId = classId, StudentId = Students.Count+1});
+                Students.Clear();
+                LoadStudentAsync();
             }
         }
         else if (query.ContainsKey("delete"))
         {
             int id = Convert.ToInt32(query["delete"]);
-            Student student = Students.FirstOrDefault(x => x.StudentId == id);
+            Student? student = Students.FirstOrDefault(x => x.StudentId == id);
             if (student != null)
             {
                 _studentRepo.DeleteStudentAsync(student);
@@ -78,13 +79,13 @@ public partial class StudentViewModel : ObservableObject, IQueryAttributable
     }
 
     [RelayCommand]
-    private async void New()
+    private async Task New()
     {
         await Shell.Current.GoToAsync(nameof(Views.StudentDetail));
     }
 
     [RelayCommand]
-    private async void Edit()
+    private async Task Edit()
     {
         await Shell.Current.GoToAsync($"{nameof(Views.StudentDetail)}?name={SelectedStudent.FullName}&birth={SelectedStudent.BirthDate}&id={SelectedStudent.StudentId}");
     }

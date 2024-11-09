@@ -12,13 +12,13 @@ public partial class ClassDetailViewModel : ObservableObject,IQueryAttributable
     {
         if (query.ContainsKey("load"))
         {
-            Name= Uri.UnescapeDataString(query["load"].ToString());
+            Name= Uri.UnescapeDataString(query["load"].ToString()??"");
             id =Convert.ToInt32(query["id"]);
         }
     }
 
     [RelayCommand]
-    private async void Save()
+    private async Task Save()
     {
         if (!string.IsNullOrWhiteSpace(Name))
         {
@@ -26,7 +26,7 @@ public partial class ClassDetailViewModel : ObservableObject,IQueryAttributable
         }
     }
     [RelayCommand]
-    private async void Delete()
+    private async Task Delete()
     {
         await Shell.Current.GoToAsync($"..?delete={Name}&id={id}");
     }

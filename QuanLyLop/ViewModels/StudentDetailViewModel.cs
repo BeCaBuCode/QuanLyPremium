@@ -13,7 +13,7 @@ public partial class StudentDetailViewModel:ObservableObject, IQueryAttributable
 
     private int id = -1;
     [RelayCommand]
-    private async void Save()
+    private async Task Save()
     {
         if (!string.IsNullOrWhiteSpace(FullName))
         {
@@ -21,7 +21,7 @@ public partial class StudentDetailViewModel:ObservableObject, IQueryAttributable
         }
     }
     [RelayCommand]
-    private async void Delete()
+    private async Task Delete()
     {
         await Shell.Current.GoToAsync($"..?delete={id}");
     }
@@ -29,8 +29,8 @@ public partial class StudentDetailViewModel:ObservableObject, IQueryAttributable
     {
         if (query.ContainsKey("name"))
         {
-            FullName = Uri.UnescapeDataString(query["name"].ToString());
-            string trytoConvert=Uri.UnescapeDataString(query["birth"].ToString());
+            FullName = Uri.UnescapeDataString(query["name"].ToString()??"");
+            string trytoConvert=Uri.UnescapeDataString(query["birth"].ToString()??"01/01/0001");
             BirthDate = DateTime.Parse(trytoConvert);
             id = Convert.ToInt32(query["id"]);
         }
