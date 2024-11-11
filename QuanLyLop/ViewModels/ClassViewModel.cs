@@ -12,7 +12,7 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
     [ObservableProperty]
     ObservableCollection<Class> classes;
     [ObservableProperty]
-    Class selectedClass=new ();
+    Class _selectedClass=new ();
     public ClassViewModel(IClassRepo iClassRepo)
     {
         _classRepository = iClassRepo;
@@ -51,12 +51,12 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
     }
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.ContainsKey("save"))
+        if (query.TryGetValue("save", out var save))
         {
-            var classReceiveEncoded = query["save"].ToString();
-            string classReceive = Uri.UnescapeDataString(classReceiveEncoded??"");
+            var classReceiveEncoded = save.ToString();
+            var classReceive = Uri.UnescapeDataString(classReceiveEncoded??"");
             var classId = Convert.ToInt32(query["id"]);
-            Class? find = Classes.FirstOrDefault(x => x.ClassId == classId);
+            var find = Classes.FirstOrDefault(x => x.ClassId == classId);
             if ( find!= null)
             {
                 find.ClassName = classReceive;
@@ -69,16 +69,13 @@ public partial class ClassViewModel:ObservableObject,IQueryAttributable
                 LoadClassesAsync();
             }
         }
-        else if (query.ContainsKey("delete"))
+        else if (query.TryGetValue("delete", out var _))
         {
-            var classReceive = query["delete"].ToString();
             var classId = Convert.ToInt32(query["id"]);
-            Class? find = Classes.FirstOrDefault(Class => Class.ClassId == classId);
-            if (find != null)
-            {
-                _classRepository.DeleteClassAsync(find);
-                Classes.Remove(find);
-            }
+            var find = Classes.FirstOrDefault(it => it.ClassId == classId);
+            if (find == null) return;
+            _classRepository.DeleteClassAsync(find);
+            Classes.Remove(find);
         }
     }
 }

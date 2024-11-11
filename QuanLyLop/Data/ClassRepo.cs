@@ -24,16 +24,13 @@ public class ClassRepo : IClassRepo
     }
     public async Task DeleteClassAsync(Class classroom)
     {
-        if (classroom != null)
-        {
-            var studentstoDelete = context.Students.Where(s=>s.ClassId == classroom.ClassId).ToList();
-            foreach (var student in studentstoDelete)
-            {
-                context.Students.Remove(student);
-            }
-            context.Classes.Remove(classroom);
-            await context.SaveChangesAsync();
-        }
+           var studentstoDelete = context.Students.Where(s=>s.ClassId == classroom.ClassId).ToList();
+           foreach (var student in studentstoDelete)
+           {
+               context.Students.Remove(student);
+           }
+           context.Classes.Remove(classroom);
+           await context.SaveChangesAsync();
     }
     public async Task UpdateClassAsync(Class classroom)
     {

@@ -1,20 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QuanLyLop.Data;
 using QuanLyLop.Services;
 
 namespace QuanLyLop.ViewModels;
 
-public partial class MainViewModel:ObservableObject
+public partial class MainViewModel(DatabaseService databaseService) : ObservableObject
 {
-    private readonly DatabaseService _databaseService;
-    [ObservableProperty] private static string link = "";
-
-    public MainViewModel(DatabaseService databaseService)
-    {
-        _databaseService = databaseService;
-    }
+    [ObservableProperty] 
+    private string _link = "";
+    
     [RelayCommand]
     private async Task NavigateCommand()
     {
@@ -29,12 +26,12 @@ public partial class MainViewModel:ObservableObject
 
         try
         {
-            _databaseService.Initialize(Link);
+            databaseService.Initialize(Link);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-           _databaseService.Initialize(Path.Combine(FileSystem.AppDataDirectory, "mydb.db"));
+            databaseService.Initialize(Path.Combine(FileSystem.AppDataDirectory, "mydb.db"));
         }
         await Shell.Current.GoToAsync(nameof(Views.ClassPage));
     }

@@ -7,9 +7,9 @@ namespace QuanLyLop.Services;
 public class DatabaseService
 {
     private SqliteConnection? _sqliteConnection;
-    private AppDbContext _dbContext;
+    private AppDbContext? _dbContext;
 
-    public AppDbContext DbContext => _dbContext;
+    public AppDbContext DbContext => _dbContext ?? throw new NullReferenceException("Call Initialize() first");
     public void Initialize(string databasePath)
     {
         var connectionString = $"Data Source={databasePath}";
@@ -18,9 +18,7 @@ public class DatabaseService
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlite(_sqliteConnection)
             .Options;
-
         _dbContext = new AppDbContext(options);
-        
         _dbContext.Database.EnsureCreated();
     }
 }

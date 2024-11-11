@@ -5,35 +5,30 @@ using QuanLyLop.Services;
 
 namespace QuanLyLop.Data;
 
-public class StudentRepo : IStudentRepo
+public class StudentRepo(DatabaseService databaseService) : IStudentRepo
 {
-    private readonly AppDbContext context;
-
-    public StudentRepo(DatabaseService databaseService)
-    {
-        context = databaseService.DbContext;
-    }
+    private readonly AppDbContext _context = databaseService.DbContext;
 
     public async Task<IEnumerable<Student>> GetStudentsByClassIdAsync(int classId)
     {
-        return await context.Students.Where(s=>s.ClassId==classId).ToListAsync();
+        return await _context.Students.Where(s => s.ClassId == classId).ToListAsync();
     }
 
     public async Task AddStudentAsync(Student student)
     {
-        context.Students.Add(student);
-        await context.SaveChangesAsync();
+        _context.Students.Add(student);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteStudentAsync(Student student)
     {
-        context.Students.Remove(student);
-        await context.SaveChangesAsync();
+        _context.Students.Remove(student);
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateStudentAsync(Student student)
     {
-        context.Students.Update(student);
-        await context.SaveChangesAsync();
+        _context.Students.Update(student);
+        await _context.SaveChangesAsync();
     }
 }

@@ -4,35 +4,36 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace QuanLyLop.ViewModels;
 
-public partial class StudentDetailViewModel:ObservableObject, IQueryAttributable
+public partial class StudentDetailViewModel : ObservableObject, IQueryAttributable
 {
-    [ObservableProperty]
-    private string fullName="";
-    [ObservableProperty]
-    private DateTime birthDate;
+    [ObservableProperty] private string _fullName = "";
+    [ObservableProperty] private DateTime _birthDate;
 
-    private int id = -1;
+    private int _id = -1;
+
     [RelayCommand]
     private async Task Save()
     {
-        if (!string.IsNullOrWhiteSpace(FullName))
+        if (string.IsNullOrWhiteSpace(FullName))
         {
-            await Shell.Current.GoToAsync($"..?fullName={FullName}&birthDate={BirthDate}&id={id}");
+            return;
         }
+        await Shell.Current.GoToAsync($"..?fullName={FullName}&birthDate={BirthDate}&id={_id}");
     }
+
     [RelayCommand]
     private async Task Delete()
     {
-        await Shell.Current.GoToAsync($"..?delete={id}");
+        await Shell.Current.GoToAsync($"..?delete={_id}");
     }
+
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.ContainsKey("name"))
-        {
-            FullName = Uri.UnescapeDataString(query["name"].ToString()??"");
-            string trytoConvert=Uri.UnescapeDataString(query["birth"].ToString()??"01/01/0001");
-            BirthDate = DateTime.Parse(trytoConvert);
-            id = Convert.ToInt32(query["id"]);
-        }
+        if (!query.TryGetValue("name", out var name)) return;
+        FullName = Uri.UnescapeDataString(name.ToString() ?? "");
+        var inputBirthday = Uri.UnescapeDataString(query["birth"].ToString() ?? "01/01/0001");
+        var isValid = DateTime.TryParse(inputBirthday, out var date);
+        BirthDate = isValid ? date : DateTime.Today;
+        _id = Convert.ToInt32(query["id"]);
     }
 }
